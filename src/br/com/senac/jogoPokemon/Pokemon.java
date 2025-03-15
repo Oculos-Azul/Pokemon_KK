@@ -1,27 +1,30 @@
 package br.com.senac.jogoPokemon;
 
 import Enum.Evolucao;
+import Enum.TipoAtaqueStrategy;
  
 public class Pokemon {	
 	private String nome;
 	private String tipo;
 	private int vida;
     private int maxVida;
-	private int ataque;
+    private int ataque;
 	private int defesa;
     private int maxDefesa;
 	private int nivel;
 	private int xp;
 	
+	private TipoAtaqueStrategy ataqueStrategy;
     private Evolucao evolucaoAtual;
 
 
-	public Pokemon(String tipo, int vida,int ataque, int defesa, int xp,  Evolucao evolucaoAtual) {
+	public Pokemon(String tipo, int vida, int ataque, int defesa, int xp, TipoAtaqueStrategy ataqueStrategy,  Evolucao evolucaoAtual) {
 		this.nome = evolucaoAtual.getNome();	
 		this.tipo = tipo;
 		this.vida = vida;
 		this.maxVida = vida;
 		this.ataque = ataque;
+		this.ataqueStrategy = ataqueStrategy;
 		this.defesa = defesa;
 		this.maxDefesa = defesa;
 		this.nivel = 1;
@@ -114,43 +117,68 @@ public class Pokemon {
 		this.xp = xp;
 	}
 
-	
-	// Methodo de EVOLUIR
-	public void evoluir( ) {
-		Evolucao proximaEvolucao = EvolucaoFactory.criarProximaEvolucao(this.evolucaoAtual);
-		if(proximaEvolucao != null) {
-			this.evolucaoAtual = proximaEvolucao;
-			this.setNome(proximaEvolucao.getNome());
-            System.out.println(this.nome + " evoluiu para " + this.evolucaoAtual + "!");
-		}else {
-			System.out.println(this.nome + " ja esta no ultimo estagio da linha evolutiva");
-		}
-	}
-	
-	// Methodo de ATACAR
-	public void  atacar(Pokemon pokemonAtacado) {
-        System.out.println(this.nome + " atacou " + pokemonAtacado.getNome());
-        
-        
-        int ataque = this.getAtaque();
-        int defesa = pokemonAtacado.getDefesa();
-        
-        if(defesa >= ataque) {
-        	pokemonAtacado.setDefesa(defesa - ataque);
-        }else {
-        	pokemonAtacado.setDefesa(0);
-            int danoRestante = ataque - defesa; 
-    		pokemonAtacado.setVida(pokemonAtacado.getVida() - danoRestante);
-    	}
+    public void atacar(Pokemon alvo) {
+    	ataqueStrategy.atacar(this, alvo);
+    }
+    
+    public void tipoAtaque(TipoAtaqueStrategy ataqueStrategy) {
+    	this.ataqueStrategy = ataqueStrategy;
     }
 	
-//	// toda vez que a classe pokemon e instanciada e chama esse methodo, ele instancia uma outra classe item
-//	public void adicionarItem(Item item) {
-//		item.aplicar(this);
+    
+    public void evoluir() {
+        Evolucao proximaEvolucao = this.evolucaoAtual.getProximaEvolucao();
+        if (proximaEvolucao != null) {
+            this.evolucaoAtual = proximaEvolucao;
+            atualizarAtributosParaEvolucao();
+            System.out.println(nome + " evoluiu para " + this.evolucaoAtual.getNome() + "!");
+        } else {
+            System.out.println(nome + " já está no último estágio de evolução!");
+        }
+    }
+    
+    private void atualizarAtributosParaEvolucao() {
+        this.nome = this.evolucaoAtual.getNome();
+        this.maxVida += 20; // Aumenta a vida ao evoluir
+        this.vida = this.maxVida;
+        this.ataque += 10;  // Aumenta o ataque ao evoluir
+        this.defesa += 5;   // Aumenta a defesa ao evoluir
+        this.maxDefesa = this.defesa;
+        this.nivel += 1;    // Sobe de nível ao evoluir
+    }
+    
+	// Methodo de EVOLUIR
+//	public void evoluir( ) {
+//		Evolucao proximaEvolucao = EvolucaoFactory.criarProximaEvolucao(this.evolucaoAtual);
+//		if(proximaEvolucao != null) {
+//			this.evolucaoAtual = proximaEvolucao;
+//			this.setNome(proximaEvolucao.getNome());
+//            System.out.println(this.nome + " evoluiu para " + this.evolucaoAtual + "!");
+//		}else {
+//			System.out.println(this.nome + " ja esta no ultimo estagio da linha evolutiva");
+//		}
 //	}
-//	
+	
+	// Methodo de ATACAR
+//	public void  atacar(Pokemon pokemonAtacado) {
+//        System.out.println(this.nome + " atacou " + pokemonAtacado.getNome());
+//        
+//        
+//        int ataque = this.getAtaque();
+//        int defesa = pokemonAtacado.getDefesa();
+//        
+//        if(defesa >= ataque) {
+//        	pokemonAtacado.setDefesa(defesa - ataque);
+//        }else {
+//        	pokemonAtacado.setDefesa(0);
+//            int danoRestante = ataque - defesa; 
+//    		pokemonAtacado.setVida(pokemonAtacado.getVida() - danoRestante);
+//    	}
+//    }
+	
 	
 
+	
 	
 	//ToString
 	@Override

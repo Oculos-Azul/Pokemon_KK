@@ -17,33 +17,41 @@ public class Main {
 		//     e caso queira mudar o estado do item eu uso o setItem para alterar o item para algum outro. Apos isso executo o methodo
 		//     aplicar item para poder alterar os atributos do pokemon passado como parametro
 		
-		// 2 - Factory: Esse design tem como funcao separar a "regra de negocio" da classe principal, assim 
-		// 3 - Strategy 
+		// 2 - Factory: Esse design tem como funcao separar a "regra de negocio" da classe principal, assim afastando a logida do usuario
+		
+		//	   implementacao: fiz a validacao da evolucao do pokemom atraves de um enum que tem a linha evolucional do pokemon, 
+		//	   apos isso criei o metodo evolucaoFactory que vai gerenciar a evolucao do pokemon, nao permitindo que ele pule 
+		//	   etapas da evolucao ou evolua para uma forma que nao existe;
+		
+		// 3 - Strategy: Esse design aplica conceito de abstracao de classes, ele prega o principio da funcao unica, ou seja
+		//     se eu posso criar uma classe para que essa classe seja responsavel para fazer um calculo expecifico, devo criar.
+		//    	
+		//	   implementacao: criei uma interface chamada ataqueEspecialStrategy para 
+		//     abstrar o atributo ataque para que o pokemom possa ter dois tipos de ataques, os ataquesSimples e os AtaquesEspeciais
+		//	   dessa maneira caso queiram inserir novos tipos de ataques nos pokemons, poderam fazer isso sem mexer nos tipos de ataque ja existentes
 		// 4 - Composite
 		// 5 - Facade 
 
-		// 
-		Pokemon charmander = new Pokemon("fogo", 100, 60, 50, 0,  Evolucao.CHARMANDER);
-		Pokemon bulbasauro = new Pokemon("planta", 100, 20, 50, 0,  Evolucao.BULBASAURO);
+		//Strategy: a instancia AtaqueSimplesStrategy realiza apenas o ataque com o valor do atriburo dano.
+		// ja a instancia AtaqueEspecialStrategy realiza a multiplicacao por 2 desse valor do ataque, assim causando mais dano
+		Pokemon charmander = new Pokemon("fogo", 100, 30, 50, 0, new AtaqueSimplesStrategy(),  Evolucao.CHARMANDER);
+		Pokemon bulbasauro = new Pokemon("planta", 100, 20, 50, 0, new AtaqueEspecialStrategy(), Evolucao.BULBASAURO);
 		
 		// Singleton: Criando uma instancia unica da classe gerenciadora de itens
 		ItemSingleton itemSingleton = ItemSingleton.getInstance();
 
+		
         System.out.println(charmander);
         charmander.evoluir();
         System.out.println(charmander.toString());
         
-        charmander.atacar(bulbasauro);
-        
-        System.out.println(bulbasauro);
-        
-        itemSingleton.setItem(new Dano());
-        itemSingleton.aplicarItem(bulbasauro);
         
         bulbasauro.atacar(charmander);
-        System.out.println(charmander);
+        System.out.println(charmander.toString());
 
-        
+        itemSingleton.setItem(new Cura());
+        itemSingleton.aplicarItem(charmander);
+        System.out.println(charmander.toString());
 
 	}
 }
