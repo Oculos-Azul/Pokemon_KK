@@ -1,4 +1,4 @@
-package br.com.senac.jogoPokemon;
+package br.com.senac.jogoPokemon.Evolucao;
 
 import Enum.Evolucao;
 
